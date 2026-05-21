@@ -1,4 +1,5 @@
-﻿using GymSystemBLL.Services.Interfaces;
+﻿using AutoMapper;
+using GymSystemBLL.Services.Interfaces;
 using GymSystemBLL.ViewModels.TrainerViewModels;
 using GymSystemDAL.Data.UnitOfWork;
 using GymSystemDAL.Models;
@@ -13,32 +14,19 @@ namespace GymSystemBLL.Services.Classes
 	public class TrainerService : ITrainerService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-		public TrainerService(IUnitOfWork unitOfWork)
+		public TrainerService(IUnitOfWork unitOfWork,IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
+			_mapper = mapper;
 		}
 		public bool CreateTrainer(CreatedTrainerViewModel model)
 		{
 			if(model is null) return false;
 			if (EmailCheck(model.Email) || PhoneCheck(model.Phone)) return false;
 			//if(model.Specialization<=0)
-			var trainer = new Trainer
-			{
-				Name = model.Name,
-				Email = model.Email,
-				PhoneNumber = model.Phone,
-				DateOfBirth = model.DateOfBirth,
-				Gender = model.Gender,
-				Specialties=model.Specialization,
-				Address = new Address
-				{
-					BuildingNo = model.BuildingNumber,
-					Street = model.Street,
-					City = model.City,
-				},
-				
-			};
+			var trainer = _mapper.Map<Trainer>(model);
 
 			try
 			{
@@ -82,14 +70,7 @@ namespace GymSystemBLL.Services.Classes
 		{
 			var result = _unitOfWork.GetRepository<Trainer>().GetAll();
 			if (result is null || !result.Any()) return [];
-			var trainers = result.Select(X => new TrainerViewModel
-			{
-				Id = X.Id,
-				Name = X.Name,
-				Email = X.Email,
-				Phone = X.PhoneNumber,
-				Specialization = X.Specialties.ToString(),
-			});
+			var trainers =_mapper.Map<IEnumerable<TrainerViewModel>>(result);
 			return trainers;
 
 		}
@@ -98,15 +79,7 @@ namespace GymSystemBLL.Services.Classes
 		{
 			var result = _unitOfWork.GetRepository<Trainer>().GetById(id);
 			if(result is null) return null;
-			return new TrainerDetailsViewModel
-			{
-				Name = result.Name,
-				Email = result.Email,
-				Phone = result.PhoneNumber,
-				Specialization = result.Specialties.ToString(),
-				DateOfBirth=result.DateOfBirth.ToShortDateString(),
-				Address = $"{result.Address.BuildingNo} - {result.Address.Street} - {result.Address.City}"
-			};
+			return _mapper.Map<TrainerDetailsViewModel>(result);
 		}
 
 		public UpdateTrainerViewModel? GetUpdatedTrainer(int id)
@@ -114,16 +87,7 @@ namespace GymSystemBLL.Services.Classes
 			var result = _unitOfWork.GetRepository<Trainer>().GetById(id);
 			if (result is null) return null;
 
-			return new UpdateTrainerViewModel
-			{
-				Name = result.Name,
-				Email = result.Email,
-				Phone = result.PhoneNumber,
-				BuildingNumber = result.Address.BuildingNo,
-				City = result.Address.City,
-				Street = result.Address.Street,
-				Specialization = result.Specialties,
-			};
+			return _mapper.Map<UpdateTrainerViewModel>(result);
 		}
 
 		public bool UpdateTrainer(int id, UpdateTrainerViewModel updatedTrainer)
@@ -134,13 +98,7 @@ namespace GymSystemBLL.Services.Classes
 			if (result is null) return false;
 			try
 			{
-				result.Email= updatedTrainer.Email;
-				result.PhoneNumber = updatedTrainer.Phone;
-				result.Address.BuildingNo = updatedTrainer.BuildingNumber;
-				result.Address.City=updatedTrainer.City;
-				result.Address.Street=updatedTrainer.Street;
-				result.Specialties = updatedTrainer.Specialization;
-				result.UpdatedAt=DateTime.Now;
+				_mapper.Map(updatedTrainer, result);
 
 				_unitOfWork.GetRepository<Trainer>().Update(result);
 				return _unitOfWork.Complete() > 0;

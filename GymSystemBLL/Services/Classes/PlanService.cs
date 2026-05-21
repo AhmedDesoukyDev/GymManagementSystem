@@ -1,4 +1,5 @@
-﻿using GymSystemBLL.Services.Interfaces;
+﻿using AutoMapper;
+using GymSystemBLL.Services.Interfaces;
 using GymSystemBLL.ViewModels.PlanViewModels;
 using GymSystemDAL.Data.UnitOfWork;
 using GymSystemDAL.Models;
@@ -13,25 +14,19 @@ namespace GymSystemBLL.Services.Classes
 	public class PlanService : IPlanService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-		public PlanService(IUnitOfWork unitOfWork)
+		public PlanService(IUnitOfWork unitOfWork,IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
+			_mapper = mapper;
 		}
 
 		public PlanViewModel? GetPlanById(int id)
 		{
 			var result = _unitOfWork.GetRepository<Plan>().GetById(id);
 			if (result == null) return null;
-			return new PlanViewModel
-			{
-				Name = result.Name,
-				Description = result.Description,
-				IsActive = result.isActive,
-				DurationDays = result.DurationDays,
-				Price = result.Price
-
-			};
+			return _mapper.Map<PlanViewModel>(result);
 		}
 
 		public IEnumerable<PlanViewModel> GetPlans()
@@ -39,16 +34,7 @@ namespace GymSystemBLL.Services.Classes
 			var result = _unitOfWork.GetRepository<Plan>().GetAll();
 			if (result is null || !result.Any()) return [];
 
-			var members = result.Select(X => new PlanViewModel
-			{
-				Id = X.Id,
-				Name = X.Name,
-				Description = X.Description,
-				DurationDays = X.DurationDays,
-				Price = X.Price,
-				IsActive = X.isActive
-
-			});
+			var members = _mapper.Map<IEnumerable<PlanViewModel>>(result);
 
 			return members;
 		}
@@ -57,13 +43,7 @@ namespace GymSystemBLL.Services.Classes
 		{
 			var updatedPlan = _unitOfWork.GetRepository<Plan>().GetById(id);
 			if (updatedPlan is null || updatedPlan.isActive==false || hasActiveMembership(id)) return null;
-			return new UpdatePlanViewModel
-			{
-				Name = updatedPlan.Name,
-				Description = updatedPlan.Description,
-				DurationDays = updatedPlan.DurationDays,
-				Price = updatedPlan.Price,
-			};
+			return _mapper.Map<UpdatePlanViewModel>(updatedPlan);
 		}
 
 		public bool ToggleStatus(int planId)
@@ -98,9 +78,8 @@ namespace GymSystemBLL.Services.Classes
 			{
 				var plan = _unitOfWork.GetRepository<Plan>().GetById(id);
 				if (plan is null || hasActiveMembership(id)) return false;
-
-				(plan.Description,plan.DurationDays,plan.Price ,plan.UpdatedAt)=
-					(Updatedplan.Description,Updatedplan.DurationDays,Updatedplan.Price,DateTime.Now);
+				//Tuple
+				_mapper.Map(Updatedplan,plan);
 
 
 

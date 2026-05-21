@@ -1,3 +1,4 @@
+using GymSystemBLL;
 using GymSystemBLL.Services.Classes;
 using GymSystemBLL.Services.Interfaces;
 using GymSystemDAL.Data;
@@ -25,7 +26,7 @@ namespace GymSystemPL
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-           
+            builder.Services.AddAutoMapper(X => X.AddProfile<MappingProfile>());
             var app = builder.Build();
             //Using to close the scope after we done
             //we are getting service that are scoped
