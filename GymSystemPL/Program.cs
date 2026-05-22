@@ -27,6 +27,7 @@ namespace GymSystemPL
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddAutoMapper(X => X.AddProfile<MappingProfile>());
+            builder.Services.AddScoped<IMemberService, MemberService>();
             var app = builder.Build();
             //Using to close the scope after we done
             //we are getting service that are scoped
@@ -51,8 +52,8 @@ namespace GymSystemPL
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthorization();

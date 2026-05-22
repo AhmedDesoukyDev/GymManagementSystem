@@ -63,7 +63,8 @@ namespace GymSystemBLL
 		{
 
 			CreateMap<Member, MemberViewModel>()
-				.ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()));
+				.ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
+				.ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.PhoneNumber));
 			CreateMap<CreateMemberViewModel, Member>()
 				.ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address()
 				{
