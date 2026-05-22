@@ -72,7 +72,8 @@ namespace GymSystemBLL
 					City = src.City,
 					Street = src.Street,
 				}))
-				.ForMember(dest => dest.HealthRecord, opt => opt.MapFrom(src => src.HealthRecordViewModel));
+				.ForMember(dest => dest.HealthRecord, opt => opt.MapFrom(src => src.HealthRecordViewModel))
+				.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone));
 
 			CreateMap<HealthRecordViewModel, HealthRecord>().ReverseMap();
 

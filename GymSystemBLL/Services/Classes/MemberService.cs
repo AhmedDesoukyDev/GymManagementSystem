@@ -40,7 +40,7 @@ namespace GymSystemBLL.Services.Classes
 
 			try
 			{
-				if (createMemberViewModel is null || isEmailExist(createMemberViewModel.Email) || isPhoneExist(createMemberViewModel.Email)) return false;
+				if (createMemberViewModel is null || isEmailExist(createMemberViewModel.Email) || isPhoneExist(createMemberViewModel.Phone)) return false;
 
 				var newMember = _mapper.Map<Member>(createMemberViewModel);
 
@@ -69,8 +69,9 @@ namespace GymSystemBLL.Services.Classes
 				//};
 
 				_unitOfWork.GetRepository<Member>().Add(newMember);
+				var done = _unitOfWork.Complete();
 
-				return _unitOfWork.Complete() > 0;
+				return done  > 0;
 			}
 			catch (Exception)
 			{
