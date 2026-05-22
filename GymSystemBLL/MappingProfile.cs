@@ -78,7 +78,9 @@ namespace GymSystemBLL
 
 			CreateMap<Member, MemberDetailsViewModel>()
 				.ForMember(dest => dest.DateOfBirth, opts => opts.MapFrom(src => src.DateOfBirth.ToShortDateString()))
-				.ForMember(dest => dest.Address, opts => opts.MapFrom(src => $"{src.Address.BuildingNo} - {src.Address.Street} - {src.Address.City}"));
+				.ForMember(dest => dest.Address, opts => opts.MapFrom(src => $"{src.Address.BuildingNo} - {src.Address.Street} - {src.Address.City}"))
+				.ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.PhoneNumber));
+
 
 
 			CreateMap<Member, UpdatedMemberViewModel>()

@@ -87,14 +87,13 @@ namespace GymSystemBLL.Services.Classes
 			if (result == null) return null;
 
 			var memberDetails = _mapper.Map<MemberDetailsViewModel>(result);
-			var memberShip = _unitOfWork.GetRepository<MemberShip>().GetAll(X => X.MemberId == id && X.Status == "Active").FirstOrDefault();
+			var memberShip = _unitOfWork.GetRepository<MemberShip>().GetAll(X => X.MemberId == id).Where(X=>X.Status == "Active").FirstOrDefault();
 			if (memberShip is not null)
 			{
 				memberDetails.MembershipStartDate = memberShip.CreatedAt.ToShortDateString();
 				memberDetails.MembershipEndDate = memberShip.EndDate.ToShortDateString();
-				//var plan = _unitOfWork.GetRepository<Plan>().GetAll(X => X.Id == memberShip.PlanId && X.isActive == true).FirstOrDefault();
 				var plan = _unitOfWork.GetRepository<Plan>().GetById(memberShip.PlanId);
-				memberDetails.PlaneName = plan?.Name;
+				memberDetails.PlanName = plan?.Name;
 			}
 
 			return memberDetails;
