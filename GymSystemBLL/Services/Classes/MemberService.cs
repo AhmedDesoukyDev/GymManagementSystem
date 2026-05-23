@@ -121,8 +121,11 @@ namespace GymSystemBLL.Services.Classes
 		{
 			try
 			{
-				if (updateMemberViewModel == null || isEmailExist(updateMemberViewModel.Email) || isPhoneExist(updateMemberViewModel.Phone)) return false;
-
+				var emailExist = _unitOfWork.GetRepository<Member>()
+					.GetAll(X => X.Email == updateMemberViewModel.Email && X.Id != id).Any();
+				var PhoneExist = _unitOfWork.GetRepository<Member>()
+					.GetAll(X => X.PhoneNumber == updateMemberViewModel.Phone && X.Id != id).Any();
+				if(updateMemberViewModel is null || emailExist || PhoneExist) return false;
 				var result = _unitOfWork.GetRepository<Member>().GetById(id);
 				if (result is not null)
 				{	
@@ -149,8 +152,15 @@ namespace GymSystemBLL.Services.Classes
 		{
 			var memberToDelete = _unitOfWork.GetRepository<Member>().GetById(id);
 			if(memberToDelete is null) return false;
-			var HasActiveSessions = _unitOfWork.GetRepository<MemberSessions>().GetAll(X=>X.MemberId ==id && X.Session.StartDate >DateTime.Now).Any();
-			if(HasActiveSessions) return false;
+			//var SessionsId = _unitOfWork.GetRepository<MemberSessions>().GetAll(X => X.MemberId == id)
+			//	.Select(X => X.SessionId); //1 2 3 
+			//var HasFutureSessions =_unitOfWork.GetRepository<Session>().GetAll(
+			//	X=> SessionsId.Contains(X.Id) && X.StartDate > DateTime.Now
+			//	).Any();
+			
+			//it will be translated to query by EF
+			var HasFutureSessions = _unitOfWork.GetRepository<MemberSessions>().GetAll(X=>X.MemberId ==id && X.Session.StartDate  >DateTime.Now).Any();
+			if(HasFutureSessions) return false;
 
 			//On Delete Cascade
 			var MemberShips = _unitOfWork.GetRepository<MemberShip>().GetAll(X => X.MemberId == id);

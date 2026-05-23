@@ -94,5 +94,90 @@ namespace GymSystemPL.Controllers
 
 
 		}
+
+
+		//Edit Member
+		public ActionResult Edit(int id)
+		{
+			if(id<= 0)
+			{
+				TempData["ErrorMessage"] = "Invalid Id";
+				return RedirectToAction(nameof(Index));
+			}
+			var MemberToUpdate = _memberService.GetMemberToUpdate(id);
+			if (MemberToUpdate is null)
+			{
+				TempData["ErrorMessage"] = "Member is not found";
+				return RedirectToAction(nameof(Index));
+
+			}
+			return View(MemberToUpdate);
+
+
+
+		}
+		[HttpPost]
+		//To make sure the id will be from route , so that client cant add it as input in form for different member
+		public ActionResult Edit([FromRoute]int id, UpdatedMemberViewModel updatedMember)
+		{
+			if (!ModelState.IsValid)
+			{
+				ModelState.AddModelError("InvalidModel", "Check for missing inputs");
+				return View(nameof(Edit),updatedMember);
+			}
+			bool isUpdated = _memberService.UpdateMember(id, updatedMember);
+			if (isUpdated) {
+
+				TempData["SuccessMessage"] = "Member is updated Successfully";
+			}
+			else
+			{
+				TempData["ErrorMessage"] = "Updated is Failed , Check Phone or Email";
+			}
+			return RedirectToAction(nameof(Index));
+
+		}
+
+
+
+		//Delete Member
+		public ActionResult Delete(int id)
+		{
+			if (id <= 0)
+			{
+				TempData["ErrorMessage"] = "Invalid Id";
+				return RedirectToAction(nameof(Index));
+			}
+			var memberToDelete = _memberService.GetMemberDetails(id);
+			if (memberToDelete is null)
+			{
+				TempData["ErrorMessage"] = "Member is not found";
+				return RedirectToAction(nameof(Index));
+
+			}
+			return View();
+		}
+		[HttpPost]
+		[ActionName("Delete")]
+		public ActionResult DeleteConfirmed([FromRoute]int id)
+		{
+			var result=_memberService.DeleteMember(id);
+			if (result)
+			{
+				TempData["SuccessMessage"] = "Member is Deleted Successfully";
+			}
+			else
+			{
+				TempData["ErrorMessage"] = "Member has active sessions , cant be deleted";
+			}
+
+			return RedirectToAction(nameof(Index));
+		
+			
+
+		}
 	}
+
+	
+	
 }
