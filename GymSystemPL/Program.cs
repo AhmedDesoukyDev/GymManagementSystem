@@ -28,6 +28,7 @@ namespace GymSystemPL
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddAutoMapper(X => X.AddProfile<MappingProfile>());
             builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<ITrainerService, TrainerService>();
             var app = builder.Build();
             //Using to close the scope after we done
             //we are getting service that are scoped

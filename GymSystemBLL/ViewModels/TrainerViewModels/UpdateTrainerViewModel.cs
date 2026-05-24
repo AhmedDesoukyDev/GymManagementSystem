@@ -1,6 +1,7 @@
 ﻿using GymSystemDAL.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace GymSystemBLL.ViewModels.TrainerViewModels
 		[EmailAddress(ErrorMessage = "Invalid Email Format")] //Validation
 		[DataType(DataType.EmailAddress)] //UI Hint , Suggestion etc
 		[StringLength(50, MinimumLength = 5, ErrorMessage = "Email must be between 5 and 50 chars")]
+		[DisplayName("Email Address")]
 		public string Email { get; set; }
 
 		[Required(ErrorMessage = "Phone Number Is Required")]

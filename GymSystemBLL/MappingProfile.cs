@@ -26,6 +26,8 @@ namespace GymSystemBLL
 		private void MapTrainer()
 		{
 			CreateMap<Trainer, TrainerViewModel>()
+			.ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialties.ToString()))
+			.ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
 			.ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialties.ToString()));
 			CreateMap<CreatedTrainerViewModel, Trainer>()
 				.ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address()
@@ -33,11 +35,16 @@ namespace GymSystemBLL
 					BuildingNo = src.BuildingNumber,
 					City = src.City,
 					Street = src.Street,
-				}));
-				
+				})).
+				ForMember(dest => dest.PhoneNumber, opts => opts.MapFrom(src => src.Phone))
+				.ForMember(dest => dest.Specialties, opt => opt.MapFrom(src => src.Specializations));
+
+
+
 
 			CreateMap<Trainer, TrainerDetailsViewModel>()
 				.ForMember(dest => dest.DateOfBirth, opts => opts.MapFrom(src => src.DateOfBirth.ToShortDateString()))
+				.ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
 				.ForMember(dest => dest.Specialization, opts => opts.MapFrom(src => src.Specialties.ToString()))
 				.ForMember(dest => dest.Address, opts => opts.MapFrom(src => $"{src.Address.BuildingNo} - {src.Address.Street} - {src.Address.City}"));
 
@@ -45,10 +52,14 @@ namespace GymSystemBLL
 			CreateMap<Trainer, UpdateTrainerViewModel>()
 				.ForMember(dest => dest.Street, opts => opts.MapFrom(src => src.Address.Street))
 				.ForMember(dest => dest.BuildingNumber, opts => opts.MapFrom(src => src.Address.BuildingNo))
-				.ForMember(dest => dest.City, opts => opts.MapFrom(src => src.Address.City));
+				.ForMember(dest => dest.City, opts => opts.MapFrom(src => src.Address.City))
+				.ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
+				.ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialties));
 
 			CreateMap<UpdateTrainerViewModel, Trainer>()
 				.ForMember(dest => dest.Name, opts => opts.Ignore())
+				.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+				.ForMember(dest => dest.Specialties, opt => opt.MapFrom(src => src.Specialization))
 				//i dont want it to create a new address object , i want the same one for member to be modified
 				.AfterMap((src, dest) =>
 				{
@@ -94,6 +105,7 @@ namespace GymSystemBLL
 			CreateMap<UpdatedMemberViewModel, Member>()
 				.ForMember(dest => dest.Name, opts => opts.Ignore()).
 				ForMember(dest => dest.Photo, opts => opts.Ignore())
+				.ForMember(dest => dest.PhoneNumber, opts => opts.MapFrom(src => src.Phone))
 				//i dont want it to create a new address object , i want the same one for member to be modified
 				.AfterMap((src, dest) =>
 				{

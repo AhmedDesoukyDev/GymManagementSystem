@@ -1,0 +1,116 @@
+﻿@model CreatedTrainerViewModel
+
+
+<div class="container mt-4">
+    <header class="mb-4">
+        <h3 class="text-primary-color">Add New Trainer</h3>
+    </header>
+
+    @Html.ValidationMessage("Invalid Model", new { @class = "text-danger" })
+
+
+    <form asp-action="Create" method="post">
+
+        <!-- Trainer Info -->
+        <div class="section-header mb-3">
+            <h5 class="text-primary fw-bold">Personal Information</h5>
+            <hr class="mt-2">
+        </div>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" type="text" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"/>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger" />
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" type="text" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger" />
+
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label asp-for="DateOfBirth"class="form-label"></label>
+                <input asp-for="DateOfBirth" type="date" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger" />
+
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label asp-for="Gender" class="form-label"></label>
+                <select asp-for="Gender" class="form-select" asp-items="@Html.GetEnumSelectList<Gender>()">
+                    <option value="">-- Select Gender --</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger" />
+
+            </div>
+
+        </div>
+        <div class="section-header mb-3 mt-4">
+            <h5 class="text-primary fw-bold">Address Information</h5>
+            <hr class="mt-2">
+        </div>
+        <div class="row g-3">
+
+            <div class="col-12 col-md-6">
+                <label asp-for="BuildingNumber" class="form-label"></label>
+                <input asp-for="BuildingNumber" class="form-control" />
+                <span asp-validation-for="BuildingNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <label asp-for="Street" class="form-label"></label>
+                <input asp-for="Street" class="form-control" />
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <div class="col-12 col-md-6">
+                <label asp-for="City" class="form-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+        </div>
+        <!-- Professional Information -->
+        <div class="section-header mb-3">
+            <h5 class="text-primary fw-bold">Professional Information</h5>
+            <hr class="mt-2">
+        </div>
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="Specializations" "class="form-label fw-semibold">
+                     @nameof(Model.Specializations) <span class="text-danger">*</span>
+                </label>
+                @foreach (Specialties item in Enum.GetValues(typeof(Specialties)))
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio"
+                               asp-for="Specializations"
+                               value="@item" />
+                        <label class="form-check-label">@item</label>
+                    </div>
+
+
+
+                }
+                <span asp-validation-for="Specializations" class="text-danger"/>
+             
+            </div>
+        </div>
+
+        <footer class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-fill">Add</button>
+        </footer>
+    </form>
+
+</div>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

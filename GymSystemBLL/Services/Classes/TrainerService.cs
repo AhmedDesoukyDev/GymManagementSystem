@@ -93,7 +93,11 @@ namespace GymSystemBLL.Services.Classes
 		public bool UpdateTrainer(int id, UpdateTrainerViewModel updatedTrainer)
 		{
 			if(updatedTrainer == null) return false;
-			if (EmailCheck(updatedTrainer.Email) || PhoneCheck(updatedTrainer.Phone)) return false;
+			var EmailExist = _unitOfWork.GetRepository<Trainer>()
+				.GetAll(X=>X.Email==updatedTrainer.Email && X.Id !=id).Any();
+			var PhoneExist = _unitOfWork.GetRepository<Trainer>()
+				.GetAll(X => X.PhoneNumber == updatedTrainer.Phone && X.Id != id).Any();
+			if (EmailExist || PhoneExist) return false;
 			var result = _unitOfWork.GetRepository<Trainer>().GetById(id);
 			if (result is null) return false;
 			try

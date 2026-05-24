@@ -1,4 +1,5 @@
 ﻿@{
+    //Get Current Controller Name
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
 }
 
@@ -45,7 +46,7 @@
                             <a class="nav-link  @(currentController == "Member" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" asp-controller="Member" asp-action="Index">Members</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" asp-controller="Trainer" asp-action="Index">Trainers</a>
+                            <a class="nav-link  @(currentController == "Trainer" ? "active" : "")  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" asp-controller="Trainer" asp-action="Index">Trainers</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" asp-controller="Session" asp-action="Index">Sessions</a>

@@ -1,6 +1,7 @@
 ﻿using GymSystemDAL.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,7 @@ namespace GymSystemBLL.ViewModels.TrainerViewModels
 		public string Phone { get; set; }
 		[Required(ErrorMessage = "Date of birth Is Required")]
 		[DataType(DataType.Date)]
+		[DisplayName("Date Of Birth")]
 		public DateOnly DateOfBirth { get; set; }
 		[Required(ErrorMessage = "Gender Is Required")]
 		public Gender Gender { get; set; }
@@ -45,6 +47,6 @@ namespace GymSystemBLL.ViewModels.TrainerViewModels
 		[RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "City Contains Only letters")]
 		public string City { get; set; }
 		[Required(ErrorMessage = "Specialization Is Required")]
-		public Specialties Specialization { get; set; }
+		public Specialties Specializations { get; set; }
 	}
 }
